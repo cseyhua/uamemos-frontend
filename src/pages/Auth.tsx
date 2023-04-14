@@ -7,6 +7,7 @@ import InputBox from "@/components/Input"
 import {useLoading} from '@/hooks'
 import Spring from '@/components/Loading'
 import * as api from '@/helper/api'
+import { useGlobalStore } from "@/store/global"
 
 const FullFlex = styled(Full)({
     padding: '1em',
@@ -56,6 +57,9 @@ function Auth() {
     const [pass, setPass] = useState('')
     const submitState = useLoading(false)
 
+    const globalState = useGlobalStore()
+    const {systemStatus} = globalState.state
+    
     const handleNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value as string)
     }
@@ -68,6 +72,7 @@ function Auth() {
         if(name === "" || pass === ""){return}
         if(submitState.isPending){return}
         try {
+            // 设置按钮状态为pending
             submitState.setPending()
             await api.signin(name, pass)
         } catch (error) {
@@ -100,9 +105,9 @@ function Auth() {
                         <AuthInputRow>
                             {/* 登录框输入框 */}
                             <div>
-                                <SpanButton color="green">登录</SpanButton>
+                                <SpanButton color={systemStatus.host?'green':''}>登录</SpanButton>
                                 <SpanButton>/</SpanButton>
-                                <SpanButton>注册</SpanButton>
+                                <SpanButton color={systemStatus.host?'':'green'}>注册</SpanButton>
                             </div>
                             <div>
                                 <InputBox required onChange={handleNameInput} value={name} name="name" tip='name' placeholder="example@qq.com" />
@@ -112,7 +117,10 @@ function Auth() {
                             </div>
                             <div>
                                 <Button disabled={submitState.isPending} type="submit" onClick={handleSignInBtnClick}>
-                                    <Column>{submitState.isPending && <Spring/>}登录 memos</Column>
+                                    <Column>
+                                    {submitState.isPending && <Spring/>}
+                                    {systemStatus.host?"登录 memos":"激活 Host"}
+                                    </Column>
                                 </Button>
                             </div>
                         </AuthInputRow>

@@ -1,4 +1,8 @@
-import useSwr from 'swr'
+type ResponseRaw<T> = {
+    data?: T;
+    error?: string;
+    message?: string;
+};
 
 export function signin(name: string, pass: string) {
     return fetch('/api/auth/signin', {
@@ -7,11 +11,23 @@ export function signin(name: string, pass: string) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: name,
-            password: pass
+            name: name,
+            pass: pass
         })
     }).then(res => {
-        if(res.ok)return res.json()
-        return Promise.resolve({message: res.statusText})
-    }).then(data => Promise.resolve(data)).catch(err => Promise.reject({ error: err }))
+        console.log(res.status,res)
+    })
+}
+
+export function getSystemStatus(){
+    return customFetchHander<SystemStatus>(fetch('/api/status'))
+}
+
+function customFetchHander<T>(promise:Promise<Response>){
+    return promise.then(async res=>{
+        if(res.status === 200)return Promise.resolve<ResponseRaw<T>>({data: await res.json()})
+        return Promise.resolve<ResponseRaw<T>>({error:res.statusText})
+    }, reason=>{
+        return Promise.resolve<ResponseRaw<T>>({error:reason})        
+    })
 }
