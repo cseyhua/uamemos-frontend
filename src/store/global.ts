@@ -1,5 +1,5 @@
 import * as storage from '@/helper/storage'
-import { getSystemStatus } from '@/helper/api'
+import * as api from '@/helper/api'
 import store, { useAppSelector } from '@/store'
 import { setAppearance, setGlobalState, setLocale } from './reduer/global'
 
@@ -28,7 +28,7 @@ export const initialGlobalState = async () => {
     defaultGlobalState.locale = storageLocale || "zh"
     defaultGlobalState.appearance = storageAppearance || "system"
 
-    const { data, error } = await getSystemStatus()
+    const { data, error } = await api.getSystemStatus()
     if (data) {
         const customizedProfile = data.customizedProfile
         defaultGlobalState.systemStatus = {
@@ -59,7 +59,7 @@ export const useGlobalStore=()=>{
             return state.systemStatus.profile.mode !== "prod"
         },
         fetchSystemStatus:async () => {
-            const {data:systemStatus} = (await getSystemStatus())
+            const {data:systemStatus} = (await api.getSystemStatus())
             store.dispatch(setGlobalState({systemStatus:systemStatus}))
             return systemStatus
         },

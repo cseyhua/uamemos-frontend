@@ -1,6 +1,6 @@
 import { camelCase } from "lodash-es";
 
-import { getSelfUser, getUserById, signout } from '@/helper/api'
+import * as api from '@/helper/api'
 import store, { useAppSelector } from '.'
 import { setHost, setUser, setUserById } from './reduer/user'
 import { getSystemColorScheme } from '@/helper/utils';
@@ -44,7 +44,7 @@ export const convertResponseModelUser = (user: User): User => {
 };
 
 const doSignIn = async () => {
-    const { data: user, error } = await getSelfUser()
+    const { data: user, error } = await api.getSelfUser()
     if (user) {
         store.dispatch(setUser(convertResponseModelUser(user)))
     } else {
@@ -54,7 +54,7 @@ const doSignIn = async () => {
 }
 
 const doSignOut = async () => {
-    await signout();
+    await api.signout();
 };
 
 const getUserIdFromPath = () => {
@@ -74,7 +74,7 @@ export const initialUserState = async () => {
       store.dispatch(setHost(convertResponseModelUser(systemStatus.host)));
     }
   
-    const { data } = (await getSelfUser());
+    const { data } = (await api.getSelfUser());
     if (data) {
       const user = convertResponseModelUser(data);
       store.dispatch(setUser(user));

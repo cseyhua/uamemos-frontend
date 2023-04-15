@@ -4,11 +4,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import globalReducer from './reduer/global'
 import userReducer from './reduer/user'
+import resourceReducer from './reduer/resource'
 
 const store = configureStore({
     reducer:{
         global: globalReducer,
-        user: userReducer
+        user: userReducer,
+        resource: resourceReducer
     }
 })
 

@@ -10,8 +10,9 @@ const customLazy = (fn: any) => (lazy(() => new Promise((resolve) => {
     setTimeout(resolve, 1000)
 }).then(v => fn)))
 
-const Root = customLazy(import('@/pages/Root'))
 const Auth = customLazy(import('@/pages/Auth'))
+const Root = customLazy(import('@/pages/Root'))
+const Home = customLazy(import('@/pages/Home'))
 
 const initialGlobalStateLoader = (() => {
     let done = false;
@@ -33,23 +34,29 @@ export default createBrowserRouter([
     {
         path: '/',
         element: <Root />,
-        loader: async () => {
-            await initialGlobalStateLoader();
-            try {
-                await initialUserState();
-            } catch (error) {
-                // do nth
+        children:[
+            {
+                path: "",
+                element: <Home />,
+                loader: async () => {
+                    // await initialGlobalStateLoader();
+                    // try {
+                    //     await initialUserState();
+                    // } catch (error) {
+                    //     // do nth
+                    // }
+        
+                    // const { host, user } = store.getState().user;
+        
+                    // if (isNullorUndefined(host)) {
+                    //     return redirect("/auth");
+                    // } else if (isNullorUndefined(user)) {
+                    //     return redirect("/explore");
+                    // }
+                    return null;
+                }
             }
-
-            const { host, user } = store.getState().user;
-
-            if (isNullorUndefined(host)) {
-                return redirect("/auth");
-            } else if (isNullorUndefined(user)) {
-                return redirect("/explore");
-            }
-            return null;
-        }
+        ]
     },
     {
         path: '/auth',

@@ -16,20 +16,31 @@ interface StorageData {
 
 type StorageKey = keyof StorageData;
 
-export function get(keys: StorageKey[]):Partial<StorageData> {
-    const data:Partial<StorageData> = {}
+export function get(keys: StorageKey[]): Partial<StorageData> {
+    const data: Partial<StorageData> = {}
 
-    for(const key of keys){
-        try{
+    for (const key of keys) {
+        try {
             const stringifyValue = localStorage.getItem(key)
-            if(stringifyValue !== null){
+            if (stringifyValue !== null) {
                 const val = JSON.parse(stringifyValue)
                 data[key] = val
             }
-        }catch(err){
+        } catch (err) {
             console.error("Get storage failed in ", key, err)
         }
     }
 
     return data
+}
+
+export function set(data: Partial<StorageData>) {
+    for (const key in data) {
+        try {
+            const stringifyValue = JSON.stringify(data[key as StorageKey]);
+            localStorage.setItem(key, stringifyValue);
+        } catch (error: any) {
+            console.error("Save storage failed in ", key, error);
+        }
+    }
 }
