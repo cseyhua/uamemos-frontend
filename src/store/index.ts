@@ -3,10 +3,12 @@ import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import globalReducer from './reduer/global'
+import userReducer from './reduer/user'
 
 const store = configureStore({
     reducer:{
-        global: globalReducer
+        global: globalReducer,
+        user: userReducer
     }
 })
 

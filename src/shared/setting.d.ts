@@ -6,3 +6,9 @@ interface LocalSetting {
     enableDoubleClickEditing: boolean;
     dailyReviewTimeOffset: number;
 }
+
+interface Setting {
+    locale: Locale;
+    appearance: Appearance;
+    memoVisibility: Visibility;
+}

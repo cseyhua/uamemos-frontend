@@ -1,27 +1,64 @@
 import { lazy } from 'react'
 import { createBrowserRouter, redirect } from 'react-router-dom'
 
-import { TOKENKEY } from '@/shared/constant'
+import { initialGlobalState } from '@/store/global'
+import { isNullorUndefined } from '@/helper/utils'
+import store from '@/store'
+import { initialUserState } from '@/store/user'
 
-const customLazy = (fn:any) => (lazy(() => new Promise((resolve) => {
+const customLazy = (fn: any) => (lazy(() => new Promise((resolve) => {
     setTimeout(resolve, 1000)
 }).then(v => fn)))
 
-const Root = customLazy( import('@/pages/Root') )
-const Auth = customLazy( import('@/pages/Auth') )
+const Root = customLazy(import('@/pages/Root'))
+const Auth = customLazy(import('@/pages/Auth'))
+
+const initialGlobalStateLoader = (() => {
+    let done = false;
+
+    return async () => {
+        if (done) {
+            return;
+        }
+        done = true;
+        try {
+            await initialGlobalState();
+        } catch (error) {
+            // do nth
+        }
+    };
+})();
 
 export default createBrowserRouter([
     {
         path: '/',
         element: <Root />,
-        loader:async () => {
-            if(!localStorage.getItem(TOKENKEY)){
-                return redirect('/auth')
+        loader: async () => {
+            await initialGlobalStateLoader();
+            const { host, user } = store.getState().user;
+
+            try {
+                await initialUserState();
+            } catch (error) {
+                // do nth
             }
+
+            console.log(host)
+
+            if (isNullorUndefined(host)) {
+                return redirect("/auth");
+            } else if (isNullorUndefined(user)) {
+                return redirect("/explore");
+            }
+            return null;
         }
     },
     {
-        path:'/auth',
-        element: <Auth />
+        path: '/auth',
+        element: <Auth />,
+        loader: async () => {
+            await initialGlobalStateLoader();
+            return null;
+        },
     }
 ])
