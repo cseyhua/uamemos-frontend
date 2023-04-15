@@ -1,10 +1,10 @@
 
-
+import MemoEditor from '@/components/MemoEditor'
 
 function Home(){
     return (
         <div>
-            HOME
+            <MemoEditor />
         </div>
     )
 }

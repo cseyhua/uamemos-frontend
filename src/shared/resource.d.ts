@@ -14,3 +14,20 @@ interface Resource {
 }
 
 type ResourceId = number;
+
+interface ResourceFind {
+    offset?: number;
+    limit?: number;
+}
+
+interface ResourceCreate {
+    filename: string;
+    externalLink: string;
+    type: string;
+}
+
+interface ResourcePatch {
+    id: ResourceId;
+    filename?: string;
+    resetPublicId?: boolean;
+}

@@ -88,8 +88,17 @@ export const initialUserState = async () => {
   };
 
 export const useUserStore = () => {
+
+    const state = useAppSelector((state) => state.user)
+
+    const isVisitorMode = () => {
+        return state.user === undefined || (getUserIdFromPath() && state.user.id !== getUserIdFromPath());
+      }
+
     return {
         doSignIn,
         doSignOut,
+        isVisitorMode,
+        getUserIdFromPath,
     }
 }

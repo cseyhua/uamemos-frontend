@@ -1,5 +1,7 @@
-import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from "react";
-import "./style.less";
+import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from "react"
+import styled from "styled-components"
+import './css/editor.less'
+
 
 export interface EditorRefActions {
     focus: FunctionType;

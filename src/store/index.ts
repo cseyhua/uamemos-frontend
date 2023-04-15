@@ -5,12 +5,20 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import globalReducer from './reduer/global'
 import userReducer from './reduer/user'
 import resourceReducer from './reduer/resource'
+import editorReducer from './reduer/editor'
+import memoReducer from './reduer/memo'
+import filterReducer from './reduer/filter'
+import tagReducer from './reduer/tag'
 
 const store = configureStore({
     reducer:{
         global: globalReducer,
         user: userReducer,
-        resource: resourceReducer
+        resource: resourceReducer,
+        editor: editorReducer,
+        memo:memoReducer,
+        filter: filterReducer,
+        tag:tagReducer
     }
 })
 

@@ -41,3 +41,5 @@ interface MemoFind {
   offset?: number;
   limit?: number;
 }
+
+type MemoSpecType = "NOT_TAGGED" | "LINKED" | "IMAGED" | "CONNECTED";

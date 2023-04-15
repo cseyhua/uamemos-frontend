@@ -1,16 +1,55 @@
-:root {
-    color-scheme: dark;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Chrome, Safari and Opera */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .word-break {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
 }
 
-* {
-    margin: 0;
-    box-sizing: border-box;
+@layer components {
+  .btn-normal {
+    @apply select-none flex flex-row justify-center items-center border dark:border-zinc-700 cursor-pointer px-3 text-sm leading-8 rounded-md hover:opacity-80 hover:shadow disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:shadow-none;
+  }
+
+  .btn-primary {
+    @apply btn-normal border-transparent bg-green-600 text-white dark:border-transparent dark:text-gray-200;
+  }
+
+  .btn-danger {
+    @apply btn-normal border-red-600 bg-red-50 text-red-600;
+  }
+
+  .btn-text {
+    @apply btn-normal text-gray-600 border-none dark:text-gray-200 hover:shadow-none;
+  }
+
+  .input-text {
+    @apply w-full px-3 py-2 leading-6 text-sm dark:text-gray-200 rounded border focus:outline focus:outline-2 dark:border-zinc-700 dark:bg-zinc-800;
+  }
 }
 
-body{
-    height: 100vh;
+html,
+body {
+  @apply text-base w-full h-full dark:bg-zinc-800;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Noto Sans", "Noto Sans CJK SC",
+    "Microsoft YaHei UI", "Microsoft YaHei", "WenQuanYi Micro Hei", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
+    sans-serif;
 }
 
-#root{
-    height: inherit;
+#root {
+  @apply w-full h-full;
 }
+

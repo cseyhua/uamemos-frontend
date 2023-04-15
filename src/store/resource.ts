@@ -1,7 +1,7 @@
 import { patchResource, setResources, deleteResource, upsertResources } from './reduer/resource'
 import store, { useAppSelector } from '.'
-import * as api from "@/helper/api";
-import { DEFAULT_MEMO_LIMIT } from "@/helper/consts";
+import * as api from "@/helper/api"
+import { DEFAULT_MEMO_LIMIT } from "@/helper/consts"
 const MAX_FILE_SIZE = 32 << 20
 
 const convertResponseModelResource = (resource: Resource): Resource => {
@@ -18,27 +18,27 @@ export const useResourceStore = () => {
     return {
         state,
         getState: () => {
-            return store.getState().resource;
+            return store.getState().resource
         },
         async fetchResourceList(): Promise<Resource[]> {
-            const { data } = (await api.getResourceList()).data;
-            const resourceList = data.map((m) => convertResponseModelResource(m));
-            store.dispatch(setResources(resourceList));
-            return resourceList;
+            const { data } = (await api.getResourceList<Resource[]>())
+            const resourceList = data?.map((m) => convertResponseModelResource(m))
+            store.dispatch(setResources(resourceList ?? []))
+            return resourceList ?? []
         },
         async fetchResourceListWithLimit(limit = DEFAULT_MEMO_LIMIT, offset?: number): Promise<Resource[]> {
             const resourceFind: ResourceFind = {
                 limit,
                 offset,
             };
-            const { data } = (await api.getResourceListWithLimit(resourceFind)).data;
-            const resourceList = data.map((m) => convertResponseModelResource(m));
-            store.dispatch(upsertResources(resourceList));
-            return resourceList;
+            const { data } = (await api.getResourceListWithLimit<Resource[]>(resourceFind))
+            const resourceList = data?.map((m) => convertResponseModelResource(m))
+            store.dispatch(upsertResources(resourceList ?? []))
+            return resourceList ?? []
         },
         async createResource(resourceCreate: ResourceCreate): Promise<Resource> {
-            const { data } = (await api.createResource(resourceCreate)).data;
-            const resource = convertResponseModelResource(data);
+            const { data } = await api.createResource<Resource>(resourceCreate)
+            const resource = convertResponseModelResource(data as Resource)
             const resourceList = state.resources;
             store.dispatch(setResources([resource, ...resourceList]));
             return resource;
@@ -51,8 +51,8 @@ export const useResourceStore = () => {
 
             const formData = new FormData();
             formData.append("file", file, filename);
-            const { data } = (await api.createResourceWithBlob(formData)).data;
-            const resource = convertResponseModelResource(data);
+            const { data } = (await api.createResourceWithBlob(formData));
+            const resource = convertResponseModelResource(data as Resource);
             const resourceList = state.resources;
             store.dispatch(setResources([resource, ...resourceList]));
             return resource;
@@ -67,8 +67,8 @@ export const useResourceStore = () => {
 
                 const formData = new FormData();
                 formData.append("file", file, filename);
-                const { data } = (await api.createResourceWithBlob(formData)).data;
-                const resource = convertResponseModelResource(data);
+                const { data } = (await api.createResourceWithBlob(formData));
+                const resource = convertResponseModelResource(data as Resource);
                 newResourceList = [resource, ...newResourceList];
             }
             const resourceList = state.resources;
@@ -76,14 +76,14 @@ export const useResourceStore = () => {
             return newResourceList;
         },
         async deleteResourceById(id: ResourceId) {
-            await api.deleteResourceById(id);
-            store.dispatch(deleteResource(id));
+            await api.deleteResourceById(id)
+            store.dispatch(deleteResource(id))
         },
         async patchResource(resourcePatch: ResourcePatch): Promise<Resource> {
-            const { data } = (await api.patchResource(resourcePatch)).data;
-            const resource = convertResponseModelResource(data);
-            store.dispatch(patchResource(resource));
+            const { data } = (await api.patchResource(resourcePatch))
+            const resource = convertResponseModelResource(data as Resource)
+            store.dispatch(patchResource(resource))
             return resource;
         },
-    };
+    }
 }
