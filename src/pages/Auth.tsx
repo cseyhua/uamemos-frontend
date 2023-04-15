@@ -10,7 +10,7 @@ import * as api from '@/helper/api'
 import { useGlobalStore } from "@/store/global"
 import { useNotification } from "@/components/notification"
 import { useUserStore } from "@/store/user"
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const FullFlex = styled(Full)({
     padding: '1em',
@@ -67,6 +67,8 @@ function Auth() {
 
     const userStore = useUserStore()
 
+    const navigate = useNavigate()
+
     const handleNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value as string)
     }
@@ -83,7 +85,7 @@ function Auth() {
             const {error} = await api.signin(name, pass)
             if(!error){
                 const user = await userStore.doSignIn()
-                Navigate({to:"/"})
+                navigate("/")
             }else{
                 addNotification({
                     content: error,

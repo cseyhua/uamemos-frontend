@@ -7,11 +7,9 @@ import store from './store'
 import { NotificationProvider } from './components/notification'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
     <NotificationProvider>
       <Provider store={store}>
         <App />
       </Provider>
     </NotificationProvider>
-  </React.StrictMode>,
 )

@@ -35,15 +35,13 @@ export default createBrowserRouter([
         element: <Root />,
         loader: async () => {
             await initialGlobalStateLoader();
-            const { host, user } = store.getState().user;
-
             try {
                 await initialUserState();
             } catch (error) {
                 // do nth
             }
 
-            console.log(host)
+            const { host, user } = store.getState().user;
 
             if (isNullorUndefined(host)) {
                 return redirect("/auth");
