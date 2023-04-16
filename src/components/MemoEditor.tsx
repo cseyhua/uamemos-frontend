@@ -363,9 +363,12 @@ function MemoEditor() {
             onCompositionEnd={() => setIsInIME(false)}
         >
             <Editor ref={editorRef} {...editorConfig} />
+            {/* 编辑器下的工具栏 */}
             <div className="common-tools-wrapper">
                 <div className="common-tools-container">
+                    {/* 标签 */}
                     <div className="action-btn tag-action">
+                        {/* #标签部分 */}
                         <Icon.Hash className="icon-img" />
                         <div ref={tagSelectorRef} className="tag-list">
                             {tags.length > 0 ? (
@@ -383,12 +386,15 @@ function MemoEditor() {
                             )}
                         </div>
                     </div>
+                    {/* 选择框 */}
                     <button className="action-btn">
                         <Icon.CheckSquare className="icon-img" onClick={handleCheckBoxBtnClick} />
                     </button>
+                    {/* 代码 */}
                     <button className="action-btn">
                         <Icon.Code className="icon-img" onClick={handleCodeBlockBtnClick} />
                     </button>
+                    {/* 资源  */}
                     <div className="action-btn resource-btn">
                         <Icon.FileText className="icon-img" />
                         <div className="resource-action-list">
@@ -407,6 +413,7 @@ function MemoEditor() {
                     </button>
                 </div>
             </div>
+            {/* 资源列表 */}
             {editorState.resourceList && editorState.resourceList.length > 0 && (
                 <div className="resource-list-wrapper">
                     {editorState.resourceList.map((resource) => {
@@ -420,6 +427,7 @@ function MemoEditor() {
                     })}
                 </div>
             )}
+            {/* 发布与保存按钮 */}
             <div className="editor-footer-container">
                 <Selector
                     className="visibility-selector"
@@ -431,7 +439,7 @@ function MemoEditor() {
                 />
                 <div className="buttons-container">
                     <button className={`action-btn cancel-btn ${isEditing ? "" : "!hidden"}`} onClick={handleCancelEdit}>
-                        {"editor.cancel-edit"}
+                        {"CANCEL"}
                     </button>
                     <button
                         className="action-btn confirm-btn"
