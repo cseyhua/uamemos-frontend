@@ -345,7 +345,7 @@ function MemoEditor() {
     const editorConfig = useMemo(() => ({
         className: `memo-editor`,
         initialContent: getEditorContentCache(),
-        placeholder: `enter memo`,
+        placeholder: `${userStore.state.user?.nickname} 你的想法是...?`,
         fullscreen: state.fullscreen,
         onContentChange: handleContentChange,
         onPaste: handlePasteEvent
@@ -371,7 +371,7 @@ function MemoEditor() {
                         {/* #标签部分 */}
                         <Icon.Hash className="icon-img" />
                         <div ref={tagSelectorRef} className="tag-list">
-                            {tags.length > 0 ? (
+                            {(tags || []).length > 0 ? (
                                 tags.map((tag) => {
                                     return (
                                         <span className="item-container" onClick={() => handleTagSelectorClick(tag)} key={tag}>

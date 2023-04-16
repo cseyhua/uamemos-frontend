@@ -6,6 +6,7 @@ import { setHost, setUser, setUserById } from './reduer/user'
 import { getSystemColorScheme } from '@/helper/utils';
 import * as storage from '@/helper/storage'
 import { setAppearance, setLocale } from "./reduer/global";
+import { UNKNOWN_ID } from "@/helper/consts";
 
 const defaultSetting: Setting = {
     locale: "en",
@@ -69,23 +70,23 @@ const getUserIdFromPath = () => {
 
 export const initialUserState = async () => {
     const { systemStatus } = store.getState().global;
-  
+
     if (systemStatus.host) {
-      store.dispatch(setHost(convertResponseModelUser(systemStatus.host)));
+        store.dispatch(setHost(convertResponseModelUser(systemStatus.host)));
     }
-  
+
     const { data } = (await api.getSelfUser());
     if (data) {
-      const user = convertResponseModelUser(data);
-      store.dispatch(setUser(user));
-      if (user.setting.locale) {
-        store.dispatch(setLocale(user.setting.locale));
-      }
-      if (user.setting.appearance) {
-        store.dispatch(setAppearance(user.setting.appearance));
-      }
+        const user = convertResponseModelUser(data);
+        store.dispatch(setUser(user));
+        if (user.setting.locale) {
+            store.dispatch(setLocale(user.setting.locale));
+        }
+        if (user.setting.appearance) {
+            store.dispatch(setAppearance(user.setting.appearance));
+        }
     }
-  };
+};
 
 export const useUserStore = () => {
 
@@ -93,12 +94,22 @@ export const useUserStore = () => {
 
     const isVisitorMode = () => {
         return state.user === undefined || (getUserIdFromPath() && state.user.id !== getUserIdFromPath());
-      }
+    }
+
+    const getCurrentUserId = () => {
+        if (isVisitorMode()) {
+            return getUserIdFromPath() || UNKNOWN_ID;
+        } else {
+            return state.user?.id || UNKNOWN_ID;
+        }
+    }
 
     return {
+        state,
         doSignIn,
         doSignOut,
         isVisitorMode,
         getUserIdFromPath,
+        getCurrentUserId
     }
 }

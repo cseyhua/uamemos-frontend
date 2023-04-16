@@ -190,8 +190,8 @@ export function getMemoList(memoFind?: MemoFind) {
 }
 
 export function deleteMemoResource(memoId: MemoId, resourceId: ResourceId) {
-    return customFetchHander(fetch(`/api/memo/${memoId}/resource/${resourceId}`,{
-        method:'DELETE'
+    return customFetchHander(fetch(`/api/memo/${memoId}/resource/${resourceId}`, {
+        method: 'DELETE'
     }))
 }
 
@@ -223,6 +223,42 @@ export function deleteTag(tagName: string) {
             name: tagName,
         })
     }))
+}
+
+export function getShortcutList(shortcutFind?: ShortcutFind) {
+    const queryList = [];
+    if (shortcutFind?.creatorId) {
+        queryList.push(`creatorId=${shortcutFind.creatorId}`);
+    }
+    return customFetchHander<Shortcut[]>(fetch(`/api/shortcut?${queryList.join("&")}`))
+}
+
+export function createShortcut(shortcutCreate: ShortcutCreate) {
+    return customFetchHander<Shortcut>(fetch("/api/shortcut", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(shortcutCreate)
+    }))
+}
+
+export function patchShortcut(shortcutPatch: ShortcutPatch) {
+    return customFetchHander<Shortcut>(fetch(`/api/shortcut/${shortcutPatch.id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(shortcutPatch)
+    }))
+}
+
+export function deleteShortcutById(shortcutId: ShortcutId) {
+    return customFetchHander(fetch(`/api/shortcut/${shortcutId}`, { method: 'DELETE' }))
+}
+
+export function getMemoStats(userId: UserId) {
+    return customFetchHander<number[]>(fetch(`/api/memo/stats?creatorId=${userId}`))
 }
 
 function customFetchHander<T>(promise: Promise<Response>) {

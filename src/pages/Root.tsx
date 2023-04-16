@@ -1,6 +1,4 @@
 import styled from "styled-components"
-
-import { Column } from "@/layouts"
 import Header from "@/pages/Header"
 import { Outlet } from "react-router-dom"
 
@@ -11,33 +9,16 @@ width: 200px;
 padding:1em;
 `
 
-const RootRaw = styled(Column)`
-width: 100%;
-margin: 0 auto;
-
-@media (min-width: 768px) {
-    width: 768px;
-}
-
-@media (min-width: 1280px) {
-    width: 1280px;
-}
-`
-
-const Main = styled.div`
-flex-grow:1;
-`
-
 function Root() {
     return (
-        <RootRaw>
-            <div>
-                <HeaderRaw />
+        <div className="w-full min-h-full bg-zinc-100 dark:bg-zinc-800">
+            <div className="w-full max-w-6xl mx-auto flex flex-row justify-center items-start">
+                <Header />
+                <main className="w-auto flex-grow flex flex-col justify-start items-start">
+                    <Outlet />
+                </main>
             </div>
-            <Main>
-                <Outlet />
-            </Main>
-        </RootRaw>
+        </div>
     )
 }
 

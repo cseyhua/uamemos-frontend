@@ -14,7 +14,7 @@ interface State {
   visibility?: Visibility;
 }
 
-export type Filter = State;
+export type Filter = State
 
 const filterSlice = createSlice({
   name: "filter",

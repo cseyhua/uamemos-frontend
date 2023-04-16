@@ -29,18 +29,18 @@ export const useMemoStore = () => {
             return store.getState().memo;
         },
         fetchMemos: async (limit = DEFAULT_MEMO_LIMIT, offset = 0) => {
-            store.dispatch(setIsFetching(true));
+            store.dispatch(setIsFetching(true))
             const memoFind: MemoFind = {
                 rowStatus: "NORMAL",
                 limit,
                 offset,
             };
             if (userStore.isVisitorMode()) {
-                memoFind.creatorId = userStore.getUserIdFromPath();
+                memoFind.creatorId = userStore.getUserIdFromPath()
             }
-            const { data } = (await api.getMemoList(memoFind));
-            const fetchedMemos = data?.map((m) => convertResponseModelMemo(m));
-            store.dispatch(upsertMemos(fetchedMemos as Memo[]));
+            const { data } = (await api.getMemoList(memoFind))
+            const fetchedMemos = data?.map((m) => convertResponseModelMemo(m)) || [] as Memo[];
+            store.dispatch(upsertMemos(fetchedMemos));
             store.dispatch(setIsFetching(false));
 
             return fetchedMemos;

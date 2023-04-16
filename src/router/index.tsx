@@ -39,20 +39,20 @@ export default createBrowserRouter([
                 path: "",
                 element: <Home />,
                 loader: async () => {
-                    // await initialGlobalStateLoader();
-                    // try {
-                    //     await initialUserState();
-                    // } catch (error) {
-                    //     // do nth
-                    // }
+                    await initialGlobalStateLoader();
+                    try {
+                        await initialUserState();
+                    } catch (error) {
+                        // do nth
+                    }
         
-                    // const { host, user } = store.getState().user;
+                    const { host, user } = store.getState().user;
         
-                    // if (isNullorUndefined(host)) {
-                    //     return redirect("/auth");
-                    // } else if (isNullorUndefined(user)) {
-                    //     return redirect("/explore");
-                    // }
+                    if (isNullorUndefined(host)) {
+                        return redirect("/auth");
+                    } else if (isNullorUndefined(user)) {
+                        return redirect("/explore");
+                    }
                     return null;
                 }
             }

@@ -9,6 +9,8 @@ import editorReducer from './reduer/editor'
 import memoReducer from './reduer/memo'
 import filterReducer from './reduer/filter'
 import tagReducer from './reduer/tag'
+import shortcutReducer from './reduer/shortcut'
+import layoutReducer from './reduer/layout'
 
 const store = configureStore({
     reducer:{
@@ -18,7 +20,9 @@ const store = configureStore({
         editor: editorReducer,
         memo:memoReducer,
         filter: filterReducer,
-        tag:tagReducer
+        tag:tagReducer,
+        shortcut:shortcutReducer,
+        layout:layoutReducer
     }
 })
 
