@@ -17,33 +17,44 @@ export const useMemoStore = () => {
     const state = useAppSelector((state) => state.memo)
     const userStore = useUserStore()
 
+    const fetchMemos = async (limit = DEFAULT_MEMO_LIMIT, offset = 0) => {
+        store.dispatch(setIsFetching(true))
+        const memoFind: MemoFind = {
+            rowStatus: "NORMAL",
+            limit,
+            offset,
+        };
+        // 如果是拜访者
+        if (userStore.isVisitorMode()) {
+            // 从路径获取用户ID，如果没有就为undefind
+            memoFind.creatorId = userStore.getUserIdFromPath()
+        }
+        const { data } = (await api.getMemoList(memoFind))
+        const fetchedMemos = data?.map((m) => convertResponseModelMemo(m)) || [] as Memo[];
+        store.dispatch(upsertMemos(fetchedMemos));
+        store.dispatch(setIsFetching(false));
+
+        return fetchedMemos;
+    }
     const fetchMemoById = async (memoId: MemoId) => {
+        // 通过Memo ID获取memo数据
         const { data } = (await api.getMemoById(memoId))
         const memo = convertResponseModelMemo(data as Memo)
         return memo;
     }
+    const getMemoById = async (memoId: MemoId) => {
+        // 在本地存储中进行查找，如果存在直接返回，不存在则发起请求，远程请求回来
+        let localFind = state.memos.find((memo) => memo.id === memoId)
+        return localFind ?? await fetchMemoById(memoId)
+    }
 
     return {
         state,
+        fetchMemoById,
+        getMemoById,
+        fetchMemos,
         getState: () => {
             return store.getState().memo;
-        },
-        fetchMemos: async (limit = DEFAULT_MEMO_LIMIT, offset = 0) => {
-            store.dispatch(setIsFetching(true))
-            const memoFind: MemoFind = {
-                rowStatus: "NORMAL",
-                limit,
-                offset,
-            };
-            if (userStore.isVisitorMode()) {
-                memoFind.creatorId = userStore.getUserIdFromPath()
-            }
-            const { data } = (await api.getMemoList(memoFind))
-            const fetchedMemos = data?.map((m) => convertResponseModelMemo(m)) || [] as Memo[];
-            store.dispatch(upsertMemos(fetchedMemos));
-            store.dispatch(setIsFetching(false));
-
-            return fetchedMemos;
         },
         fetchAllMemos: async (limit = DEFAULT_MEMO_LIMIT, offset?: number) => {
             const memoFind: MemoFind = {
@@ -68,16 +79,6 @@ export const useMemoStore = () => {
                 return convertResponseModelMemo(m);
             });
             return archivedMemos;
-        },
-        fetchMemoById,
-        getMemoById: async (memoId: MemoId) => {
-            for (const m of state.memos) {
-                if (m.id === memoId) {
-                    return m;
-                }
-            }
-
-            return await fetchMemoById(memoId);
         },
         getLinkedMemos: async (memoId: MemoId): Promise<Memo[]> => {
             const regex = new RegExp(`[@(.+?)](${memoId})`);

@@ -1,7 +1,9 @@
-
-import MemoEditor from '@/components/MemoEditor'
-import MemoList from '@/components/MemoList'
 import { useUserStore } from '@/store/user'
+
+import MemoEditor from '@/components/memo/MemoEditor'
+import MemoList from '@/components/memo/MemoList'
+import MemoFilter from '@/components/memo/MemoFilter'
+
 import HomeSidebar from './HomeSidebar'
 
 function Home(){
@@ -15,6 +17,7 @@ function Home(){
                     {/* 用户是非拜访者模式则显示编辑器 */}
                     {!userStore.isVisitorMode() && <MemoEditor />}
                 </div>
+                <MemoFilter />
                 <MemoList />
             </div>
             <HomeSidebar />

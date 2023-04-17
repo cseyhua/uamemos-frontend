@@ -1,6 +1,5 @@
 import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from "react"
-import styled from "styled-components"
-import './css/editor.less'
+import '@/components/css/editor.less'
 
 
 export interface EditorRefActions {

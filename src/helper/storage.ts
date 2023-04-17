@@ -44,3 +44,13 @@ export function set(data: Partial<StorageData>) {
         }
     }
 }
+
+export function remove(keys: StorageKey[]) {
+    for (const key of keys) {
+        try {
+            localStorage.removeItem(key);
+        } catch (error: any) {
+            console.error("Remove storage failed in ", key, error);
+        }
+    }
+}

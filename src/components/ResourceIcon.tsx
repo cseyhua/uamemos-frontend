@@ -1,4 +1,4 @@
-import Icon from "./Icon";
+import Icon from "./Icon"
 
 interface Props {
   className: string;
@@ -6,14 +6,14 @@ interface Props {
 }
 
 const ResourceIcon = (props: Props) => {
-  const { className, resourceType } = props;
+  const { className, resourceType } = props
 
-  let ResourceIcon = Icon.FileText;
+  let ResourceIcon = Icon.FileText
   if (resourceType.includes("image")) {
-    ResourceIcon = Icon.Image;
+    ResourceIcon = Icon.Image
   }
 
-  return <ResourceIcon className={className} />;
-};
+  return <ResourceIcon className={className} />
+}
 
-export default ResourceIcon;
+export default ResourceIcon

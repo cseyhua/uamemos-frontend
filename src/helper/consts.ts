@@ -8,9 +8,9 @@ export const ANIMATION_DURATION = 200;
 export const DAILY_TIMESTAMP = 3600 * 24 * 1000;
 
 export const VISIBILITY_SELECTOR_ITEMS = [
-  { text: "PRIVATE", value: "PRIVATE" },
-  { text: "PROTECTED", value: "PROTECTED" },
-  { text: "PUBLIC", value: "PUBLIC" },
+  { value: "PRIVATE", text: "仅自己可见" },
+  { value: "PROTECTED", text: "关注者可见" },
+  { value: "PUBLIC", text: "所有人可见" },
 ];
 
 // space width for tab action in editor

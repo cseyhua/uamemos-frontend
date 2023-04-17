@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DAILY_TIMESTAMP } from "@/helper/consts"
 import Icon from "../Icon";
-import "@/less/common/date-picker.less";
+import "@/components/css/date-picker.less";
 
 interface DatePickerProps {
   className?: string;

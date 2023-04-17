@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from "react"
-import { isNumber, last, toLower, toUpper, uniq } from "lodash-es"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { isNumber, last, toUpper, uniq } from "lodash-es"
 
 import { useGlobalStore } from "@/store/global"
 import { useUserStore } from "@/store/user"
@@ -19,10 +19,10 @@ import { useNotification } from "@/components/notification"
 
 import Editor, { EditorRefActions } from "./Editor"
 
-import './css/memo-editor.less'
-import Icon from "./Icon"
-import ResourceIcon from "./ResourceIcon"
-import Selector from "./kit/Selector"
+import '@/components/css/memo-editor.less'
+import Icon from "../Icon"
+import ResourceIcon from "../ResourceIcon"
+import Selector from "../kit/Selector"
 
 const listItemSymbolList = ["- [ ] ", "- [x] ", "- [X] ", "* ", "- "]
 const emptyOlReg = /^(\d+)\. $/
@@ -67,8 +67,9 @@ function MemoEditor() {
     })
     const [allowSave, setAllowSave] = useState<boolean>(false)
     const editorRef = useRef<EditorRefActions>(null)
-    const tagSelectorRef = useRef<HTMLDivElement>(null);
-    const [isInIME, setIsInIME] = useState(false);
+    const prevEditorStateRef = useRef(editorState)
+    const tagSelectorRef = useRef<HTMLDivElement>(null)
+    const [isInIME, setIsInIME] = useState(false)
 
     const handleContentChange = (content: string) => {
         setAllowSave(content !== "");
@@ -196,13 +197,18 @@ function MemoEditor() {
             };
         });
 
+        // 得到内容
         const content = editorRef.current?.getContent() ?? "";
         try {
+            // 获取ID，编辑器正在编辑
             const { editMemoId } = editorStore.getState();
+            // ID存在并且不为空，表示正在编辑一个已经存在的memo
             if (editMemoId && editMemoId !== UNKNOWN_ID) {
+                // 获取这个memo先前的状态
                 const prevMemo = await memoStore.getMemoById(editMemoId ?? UNKNOWN_ID);
 
                 if (prevMemo) {
+                    // 合并两个memo，与先前的状态
                     await memoStore.patchMemo({
                         id: prevMemo.id,
                         content,
@@ -212,6 +218,7 @@ function MemoEditor() {
                 }
                 editorStore.clearEditMemo();
             } else {
+                // ID不存在，则创建新的Memo
                 await memoStore.createMemo({
                     content,
                     visibility: editorState.memoVisibility,
@@ -220,21 +227,23 @@ function MemoEditor() {
                 filterStore.clearFilter();
             }
         } catch (error: any) {
-            console.error(error);
+            console.error(error)
             addNotification({
                 content: error.response.data.message
             })
+        } finally {
+            setState((state) => {
+                return {
+                    ...state,
+                    isRequesting: false,
+                };
+            })
         }
-        setState((state) => {
-            return {
-                ...state,
-                isRequesting: false,
-            };
-        });
 
-        // Upsert tag with the content.
+        // 更新标签
         const matchedNodes = getMatchedNodes(content);
         const tagNameList = uniq(matchedNodes.filter((node) => node.parserName === "tag").map((node) => node.matchedContent.slice(1)));
+        // 对每个标签发生创建请求，改进
         for (const tagName of tagNameList) {
             await tagStore.upsertTag(tagName);
         }
@@ -333,19 +342,39 @@ function MemoEditor() {
         editorRef.current?.insertText(`#${tag} `);
     }, [])
 
+    useEffect(() => {
+        if (editorState.editMemoId) {
+            memoStore.getMemoById(editorState.editMemoId ?? UNKNOWN_ID).then((memo) => {
+                if (memo) {
+                    handleEditorFocus();
+                    editorStore.setMemoVisibility(memo.visibility);
+                    editorStore.setResourceList(memo.resourceList);
+                    editorRef.current?.setContent(memo.content ?? "");
+                }
+            });
+            storage.set({
+                editingMemoIdCache: editorState.editMemoId,
+            });
+        } else {
+            storage.remove(["editingMemoIdCache"]);
+        }
+
+        prevEditorStateRef.current = editorState;
+    }, [editorState.editMemoId])
+
     const isEditing = Boolean(editorState.editMemoId && editorState.editMemoId !== UNKNOWN_ID);
     const tags = tagStore.state.tags;
     const memoVisibilityOptionSelectorItems = VISIBILITY_SELECTOR_ITEMS.map((item) => {
         return {
             value: item.value,
-            text: `${toUpper(item.value)}`,
+            text: `${toUpper(item.text)}`,
         }
     })
 
     const editorConfig = useMemo(() => ({
         className: `memo-editor`,
         initialContent: getEditorContentCache(),
-        placeholder: `${userStore.state.user?.nickname} 你的想法是...?`,
+        placeholder: `\`${userStore.state.user?.nickname}\`你的想法是...`,
         fullscreen: state.fullscreen,
         onContentChange: handleContentChange,
         onPaste: handlePasteEvent
@@ -446,7 +475,7 @@ function MemoEditor() {
                         disabled={!(allowSave || editorState.resourceList.length > 0) || state.isUploadingResource || state.isRequesting}
                         onClick={handleSaveBtnClick}
                     >
-                        {"SAVE"}
+                        {"保存"}
                     </button>
                 </div>
             </div>

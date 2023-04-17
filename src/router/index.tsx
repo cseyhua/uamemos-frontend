@@ -13,6 +13,10 @@ const customLazy = (fn: any) => (lazy(() => new Promise((resolve) => {
 const Auth = customLazy(import('@/pages/Auth'))
 const Root = customLazy(import('@/pages/Root'))
 const Home = customLazy(import('@/pages/Home'))
+const MemoDetail = customLazy(import('@/pages/MemoDetail'))
+const DailyReview = customLazy(import('@/pages/DailyReview'))
+const ResourcesDashboard = customLazy(import('@/pages/ResourceDashboard'))
+const Explore = customLazy(import('@/pages/Explore'))
 
 const initialGlobalStateLoader = (() => {
     let done = false;
@@ -27,14 +31,14 @@ const initialGlobalStateLoader = (() => {
         } catch (error) {
             // do nth
         }
-    };
-})();
+    }
+})()
 
 export default createBrowserRouter([
     {
         path: '/',
         element: <Root />,
-        children:[
+        children: [
             {
                 path: "",
                 element: <Home />,
@@ -45,9 +49,9 @@ export default createBrowserRouter([
                     } catch (error) {
                         // do nth
                     }
-        
+
                     const { host, user } = store.getState().user;
-        
+
                     if (isNullorUndefined(host)) {
                         return redirect("/auth");
                     } else if (isNullorUndefined(user)) {
@@ -55,6 +59,63 @@ export default createBrowserRouter([
                     }
                     return null;
                 }
+            },
+            {
+                path: "review",
+                element: <DailyReview />,
+                loader: async () => {
+                    await initialGlobalStateLoader();
+
+                    try {
+                        await initialUserState();
+                    } catch (error) {
+                        // do nth
+                    }
+
+                    const { host } = store.getState().user;
+                    if (isNullorUndefined(host)) {
+                        return redirect("/auth");
+                    }
+                    return null;
+                },
+            },
+            {
+                path: "resources",
+                element: <ResourcesDashboard />,
+                loader: async () => {
+                    await initialGlobalStateLoader();
+
+                    try {
+                        await initialUserState();
+                    } catch (error) {
+                        // do nth
+                    }
+
+                    const { host } = store.getState().user;
+                    if (isNullorUndefined(host)) {
+                        return redirect("/auth");
+                    }
+                    return null;
+                },
+            },
+            {
+                path: "explore",
+                element: <Explore />,
+                loader: async () => {
+                    await initialGlobalStateLoader();
+
+                    try {
+                        await initialUserState();
+                    } catch (error) {
+                        // do nth
+                    }
+
+                    const { host } = store.getState().user;
+                    if (isNullorUndefined(host)) {
+                        return redirect("/auth");
+                    }
+                    return null;
+                },
             }
         ]
     },
@@ -65,5 +126,13 @@ export default createBrowserRouter([
             await initialGlobalStateLoader();
             return null;
         },
+    },
+    {
+        path: '/memo/:memoId',
+        element: <MemoDetail />,
+        loader: async () => {
+            await initialGlobalStateLoader()
+            return null
+        }
     }
 ])

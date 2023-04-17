@@ -1,16 +1,21 @@
+import { useEffect, useState } from 'react'
 
-import { useMemoStore } from '@/store/memo';
-import './css/memo-list.less'
-import { useUserStore } from '@/store/user';
-import { useFilterStore } from '@/store/filter';
-import { useEffect, useState } from 'react';
-import { useShortcutStore } from '@/store/shortcut';
-import { checkShouldShowMemoWithFilters } from '@/helper/filter';
-import { LINK_REG, TAG_REG } from '@/labs/marked/parser';
-import { getTimeStampByDate } from '@/helper/datetime';
-import Memo from './Memo';
-import { DEFAULT_MEMO_LIMIT } from '@/helper/consts';
+import { useMemoStore } from '@/store/memo'
+import { useUserStore } from '@/store/user'
+import { useFilterStore } from '@/store/filter'
+
+import { useShortcutStore } from '@/store/shortcut'
+
+import { getTimeStampByDate } from '@/helper/datetime'
+import { checkShouldShowMemoWithFilters } from '@/helper/filter'
+import { DEFAULT_MEMO_LIMIT } from '@/helper/consts'
+import { LINK_REG, TAG_REG } from '@/labs/marked/parser'
+
 import { useNotification } from '@/components/notification'
+import Memo from '@/components/memo/Memo';
+
+
+import '@/components/css/memo-list.less'
 
 function MemoList() {
 

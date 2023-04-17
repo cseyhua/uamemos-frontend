@@ -11,6 +11,7 @@ import filterReducer from './reduer/filter'
 import tagReducer from './reduer/tag'
 import shortcutReducer from './reduer/shortcut'
 import layoutReducer from './reduer/layout'
+import dialogReducer from './reduer/dialog'
 
 const store = configureStore({
     reducer:{
@@ -22,7 +23,8 @@ const store = configureStore({
         filter: filterReducer,
         tag:tagReducer,
         shortcut:shortcutReducer,
-        layout:layoutReducer
+        layout:layoutReducer,
+        dialog: dialogReducer
     }
 })
 

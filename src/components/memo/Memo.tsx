@@ -1,16 +1,20 @@
-import { getRelativeTimeString } from "@/helper/datetime";
-import { useEditorStore } from "@/store/editor";
-import { useFilterStore } from "@/store/filter";
-import { useMemoStore } from "@/store/memo";
-import { useUserStore } from "@/store/user";
-import { useRef, useState, memo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useNotification } from '@/components/notification'
+import { useRef, useState, memo } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
-import './css/memo.less'
-import Icon from "./Icon";
-import MemoContent from "./MemoContent";
-import MemoResources from "./MemoResources";
+import { getRelativeTimeString } from "@/helper/datetime"
+import { useEditorStore } from "@/store/editor"
+import { useFilterStore } from "@/store/filter"
+import { useMemoStore } from "@/store/memo"
+import { useUserStore } from "@/store/user"
+
+import { useNotification } from '@/components/notification'
+import Icon from "@/components/Icon"
+import { showCommonDialog } from "@/components/dialog/CommonDialog"
+
+import MemoContent from "./MemoContent"
+import MemoResources from "./MemoResources"
+
+import '@/components/css/memo.less'
 
 interface Props {
     memo: Memo;
@@ -73,15 +77,15 @@ function Memo(props: Props) {
 
     // 删除按钮被按下
     const handleDeleteMemoClick = async () => {
-        // showCommonDialog({
-        //   title: t("memo.delete-memo"),
-        //   content: t("memo.delete-confirm"),
-        //   style: "warning",
-        //   dialogName: "delete-memo-dialog",
-        //   onConfirm: async () => {
-        //     await memoStore.deleteMemoById(memo.id);
-        //   },
-        // });
+        showCommonDialog({
+          title: ("memo.delete-memo"),
+          content: ("memo.delete-confirm"),
+          style: "warning",
+          dialogName: "delete-memo-dialog",
+          onConfirm: async () => {
+            await memoStore.deleteMemoById(memo.id);
+          },
+        });
     }
 
     // 共享Memo
@@ -156,6 +160,8 @@ function Memo(props: Props) {
         } else if (targetEl.classList.contains("todo-block")) {
             return;
         }
+
+        console.log(memo)
 
         editorStore.setEditMemoWithId(memo.id);
     }
